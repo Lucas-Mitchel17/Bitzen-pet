@@ -2,8 +2,6 @@
 import { BaseText } from "src/components/ui/base";
 import { computed, ref } from "vue";
 
-const checkbox = ref(false);
-
 const props = defineProps({
   formVariation: {
     type: String,
@@ -13,16 +11,6 @@ const props = defineProps({
   backButtonLink: String,
   title: String,
   hasImage: Boolean,
-  hrefSubmit: {
-    type: String,
-    required: true,
-  },
-  submitLabel: {
-    type: String,
-    required: true,
-  },
-  hasCheckbox: Boolean,
-  resetPassword: Boolean,
 });
 
 const sizes = computed(() => {
@@ -68,8 +56,9 @@ const sizes = computed(() => {
 
     <slot name="description"></slot>
 
-    <q-form class="q-gutter-md auth-form">
-      <slot name="input"></slot>
+    <!-- TODO remove this -->
+    <!-- <q-form class="q-gutter-md auth-form">
+      <slot name="fields"></slot>
 
       <div class="auth-check-pass" v-if="hasCheckbox">
         <div class="auth-checkbox">
@@ -90,7 +79,10 @@ const sizes = computed(() => {
       <q-btn type="submit" class="btn is-blue is-full" :label="submitLabel" />
     </router-link>
 
-    <slot name="send-code"></slot>
+    <slot name="send-code"></slot> -->
+    <!-- TODO remove this -->
+
+    <slot></slot>
   </section>
 </template>
 

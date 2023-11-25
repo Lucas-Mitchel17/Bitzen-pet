@@ -1,7 +1,11 @@
 <script setup>
-import { reactive } from "vue";
+import { ref, reactive } from "vue";
 import { AuthLayout } from "src/layouts";
 import { BaseText } from "src/components/ui/base";
+
+const disabled = ref(false);
+const loading = ref(false);
+const checkbox = ref(false);
 
 const fields = reactive([
   {
@@ -58,11 +62,9 @@ const fields = reactive([
 <template>
   <q-page padding class="sign-up">
     <AuthLayout
-      form-variation="is-large"
-      has-checkbox
       back-button
       back-button-link="/login"
-      href-submit="#"
+      form-variation="is-large"
       submit-label="Criar Conta"
     >
       <template #main-title>
@@ -76,7 +78,7 @@ const fields = reactive([
         </BaseText>
       </template>
 
-      <template #input>
+      <q-form class="q-gutter-md auth-form">
         <q-input
           v-model="field.model"
           v-for="field in fields"
@@ -89,15 +91,31 @@ const fields = reactive([
           :placeholder="field.placeholder"
           :rules="[(val) => (val && val.length > 0) || field.errorMessage]"
           :type="field.type"
+          :loading="loading"
+          :disable="disabled"
         />
-      </template>
 
-      <template #checkboxLabel>
-        <BaseText class="auth-checkbox-label is-sign-up">
-          Li e concordo com os <RouterLink to="#">Termos de uso</RouterLink> e a
-          <RouterLink to="#">Política de privacidade</RouterLink> do sistema.
-        </BaseText>
-      </template>
+        <div class="auth-check-pass">
+          <div class="auth-checkbox">
+            <q-checkbox class="auth-checkbox-icon" v-model="checkbox" />
+
+            <BaseText class="auth-checkbox-label is-sign-up">
+              Li e concordo com os
+              <RouterLink to="#">Termos de uso</RouterLink> e a
+              <RouterLink to="#">Política de privacidade</RouterLink> do
+              sistema.
+            </BaseText>
+          </div>
+
+          <div class="auth-forgot-password">
+            <router-link to="/esqueceu-sua-senha">
+              <BaseText class="is-blue"> Esqueceu sua senha? </BaseText>
+            </router-link>
+          </div>
+        </div>
+
+        <q-btn type="submit" class="btn is-blue is-full" label="Criar conta" />
+      </q-form>
     </AuthLayout>
   </q-page>
 </template>
