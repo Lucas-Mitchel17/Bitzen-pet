@@ -1,5 +1,8 @@
 <script setup>
 import { ref, reactive } from "vue";
+import { api } from "boot/axios";
+import { Notify } from "quasar";
+import { apiErrorHandler } from "src/helpers";
 import { AuthLayout } from "src/layouts";
 import { BaseText } from "src/components/ui/base";
 
@@ -9,54 +12,108 @@ const checkbox = ref(false);
 
 const fields = reactive([
   {
+    name: "name",
     type: "text",
     size: "is-full",
     label: "Nome",
-    model: "",
+    model: "Lucas",
     placeholder: "Seu Nome",
-    errorMessage: "Campo obrigatório",
+    errorMessage: "",
   },
   {
+    name: "email",
     type: "email",
     size: "is-full",
     label: "Email",
-    model: "",
+    model: "lucas@gmail.com",
     placeholder: "Insira seu e-mail",
-    errorMessage: "Campo obrigatório",
+    errorMessage: "",
   },
   {
-    type: "number",
+    name: "document",
+    type: "text",
     size: "is-half",
     label: "CPF",
-    model: "",
+    model: "15115732602",
     placeholder: "Insira o seu CPF",
-    errorMessage: "Campo obrigatório",
+    errorMessage: "",
+    mask: "XXX.XXX.XXX-XX",
   },
   {
+    name: "phone_number",
     type: "tel",
     size: "is-half",
     label: "Telefone",
-    model: "",
+    model: "31987698188",
     placeholder: "Insira o seu telefone",
-    errorMessage: "Campo obrigatório",
+    errorMessage: "",
+    mask: "XX XXXX-XXXX",
   },
   {
+    name: "password",
     type: "password",
     size: "is-half",
     label: "Senha",
-    model: "",
+    model: "12345678",
     placeholder: "Crie uma senha",
-    errorMessage: "Campo obrigatório",
+    errorMessage: "",
   },
   {
+    name: "password_confirmation",
     type: "password",
     size: "is-half",
     label: "Confirmar senha",
-    model: "",
+    model: "12345678",
     placeholder: "Repita a senha",
-    errorMessage: "Campo obrigatório",
+    errorMessage: "",
   },
 ]);
+
+function onSubmit() {
+  const payload = getPayload();
+
+  register(payload);
+}
+
+function getPayload() {
+  const payload = {};
+
+  fields.forEach(({ name, model, mask, type }) => {
+    if (type === "tel") {
+      payload[name] = `${model.substring(0, 2)} ${model.substring(2)}`;
+      return;
+    }
+
+    if (mask) {
+      payload[name] = model.replace(/[ .-]/g);
+      return;
+    }
+
+    payload[name] = model;
+  });
+
+  return payload;
+}
+
+function register(payload) {
+  return api
+    .post("/register", payload)
+    .then((response) => {
+      console.log(response);
+    })
+    .catch((error) => {
+      const { message, data } = apiErrorHandler(error);
+      Notify.create({ type: "negative", message });
+
+      fields.forEach((field) => {
+        const hasKey = data.hasOwnProperty(field.name);
+
+        if (hasKey) {
+          field.errorMessage = data[field.name][0];
+        }
+      });
+    });
+}
 </script>
 
 <template>
@@ -78,22 +135,28 @@ const fields = reactive([
         </BaseText>
       </template>
 
-      <q-form class="q-gutter-md auth-form">
+      <q-form class="q-gutter-md auth-form" @submit="onSubmit">
         <q-input
           v-model="field.model"
           v-for="field in fields"
           lazy-rules
           outlined
           stack-label
+          :rules="[field.errorMessage]"
           :class="field.size"
           :label="field.label"
           :key="field.label"
           :placeholder="field.placeholder"
-          :rules="[(val) => (val && val.length > 0) || field.errorMessage]"
           :type="field.type"
           :loading="loading"
           :disable="disabled"
-        />
+          :error="!!field.errorMessage"
+          :mask="field.mask"
+        >
+          <template #error>
+            <div>{{ field.errorMessage }}</div>
+          </template>
+        </q-input>
 
         <div class="auth-check-pass">
           <div class="auth-checkbox">
