@@ -4,13 +4,6 @@ import { AuthLayout } from "src/layouts";
 import { BaseText } from "src/components/ui/base";
 
 const email = ref("");
-const password = ref("");
-
-const updateModelValue = (info) => {
-  return (value) => {
-    info.model.value = value;
-  };
-};
 
 const inputsInfo = computed(() => [
   {
@@ -21,40 +14,31 @@ const inputsInfo = computed(() => [
     placeholder: "Insira seu e-mail",
     errorMessage: "Campo obrigatório",
   },
-  {
-    type: "password",
-    size: "is-full",
-    label: "Senha",
-    model: password,
-    placeholder: "Sua Senha",
-    errorMessage: "Campo obrigatório",
-  },
 ]);
 </script>
 
 <template>
-  <q-page padding class="login">
+  <q-page padding class="forgot-password">
     <AuthLayout
-      has-image
-      has-checkbox
-      reset-password
-      href-submit="#"
-      submit-label="Entrar na Plataforma"
+      hasImage
+      backButton
+      backButtonLink="/login"
+      hrefSubmit="#"
+      submitLabel="Próximo"
     >
       <template #title>
-        <BaseText tag="h2" class="auth-title"> Entrar na plataforma </BaseText>
+        <BaseText tag="h2" class="auth-title"> Esqueceu sua senha? </BaseText>
       </template>
 
       <template #description>
         <BaseText class="description">
-          Não tem uma conta?
-          <RouterLink to="/cadastro">Cadastre-se gratuitamente</RouterLink>
+          Vamos te ajudar nisso! Primeiro, digite seu e-mail cadastrado ao criar
+          a sua conta.
         </BaseText>
       </template>
 
       <template #input>
         <q-input
-          :modelValue="inputsInfo.model"
           :v-model="model"
           v-for="{
             label,
@@ -67,7 +51,6 @@ const inputsInfo = computed(() => [
           lazy-rules
           outlined
           stack-label
-          @update:modelValue="updateModelValue(inputsInfo)"
           :class="size"
           :label="label"
           :key="label"
@@ -76,16 +59,12 @@ const inputsInfo = computed(() => [
           :type="type"
         />
       </template>
-
-      <template #checkboxLabel>
-        <BaseText class="auth-checkbox-label"> Manter Conectado </BaseText>
-      </template>
     </AuthLayout>
   </q-page>
 </template>
 
 <style lang="scss" scoped>
-.login {
+.forgot-password {
   display: grid;
   place-items: center;
 }

@@ -3,58 +3,58 @@ import { computed, ref } from "vue";
 import { AuthLayout } from "src/layouts";
 import { BaseText } from "src/components/ui/base";
 
-const email = ref("");
-const password = ref("");
-
-const updateModelValue = (info) => {
-  return (value) => {
-    info.model.value = value;
-  };
-};
+const code1 = ref("");
+const code2 = ref("");
+const code3 = ref("");
+const code4 = ref("");
 
 const inputsInfo = computed(() => [
   {
-    type: "email",
-    size: "is-full",
-    label: "Email",
-    model: email,
-    placeholder: "Insira seu e-mail",
-    errorMessage: "Campo obrigatório",
+    type: "number",
+    size: "is-email-code",
+    model: code1,
   },
   {
-    type: "password",
-    size: "is-full",
-    label: "Senha",
-    model: password,
-    placeholder: "Sua Senha",
-    errorMessage: "Campo obrigatório",
+    type: "number",
+    size: "is-email-code",
+    model: code2,
+  },
+  {
+    type: "number",
+    size: "is-email-code",
+    model: code3,
+  },
+  {
+    type: "number",
+    size: "is-email-code",
+    model: code4,
   },
 ]);
 </script>
 
 <template>
-  <q-page padding class="login">
+  <q-page padding class="email-code">
     <AuthLayout
+      form-variation="is-email-code"
       has-image
-      has-checkbox
-      reset-password
+      back-button
+      back-button-link="/login"
       href-submit="#"
-      submit-label="Entrar na Plataforma"
+      submit-label="Próximo"
     >
       <template #title>
-        <BaseText tag="h2" class="auth-title"> Entrar na plataforma </BaseText>
+        <BaseText tag="h2" class="auth-title"> Confira o seu email </BaseText>
       </template>
 
       <template #description>
         <BaseText class="description">
-          Não tem uma conta?
-          <RouterLink to="/cadastro">Cadastre-se gratuitamente</RouterLink>
+          Insira nos campos abaixo o código que enviamos para você no seu
+          endereço de e-mail.
         </BaseText>
       </template>
 
       <template #input>
         <q-input
-          :modelValue="inputsInfo.model"
           :v-model="model"
           v-for="{
             label,
@@ -67,7 +67,6 @@ const inputsInfo = computed(() => [
           lazy-rules
           outlined
           stack-label
-          @update:modelValue="updateModelValue(inputsInfo)"
           :class="size"
           :label="label"
           :key="label"
@@ -77,15 +76,17 @@ const inputsInfo = computed(() => [
         />
       </template>
 
-      <template #checkboxLabel>
-        <BaseText class="auth-checkbox-label"> Manter Conectado </BaseText>
+      <template #send-code>
+        <BaseText class="auth-send-code">
+          Não recebeu o código? <RouterLink to="#">Reenviar</RouterLink>
+        </BaseText>
       </template>
     </AuthLayout>
   </q-page>
 </template>
 
 <style lang="scss" scoped>
-.login {
+.email-code {
   display: grid;
   place-items: center;
 }

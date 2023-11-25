@@ -3,16 +3,22 @@ import { computed, ref } from "vue";
 import { AuthLayout } from "src/layouts";
 import { BaseText } from "src/components/ui/base";
 
+const name = ref("");
 const email = ref("");
+const cpf = ref("");
+const phone = ref("");
 const password = ref("");
-
-const updateModelValue = (info) => {
-  return (value) => {
-    info.model.value = value;
-  };
-};
+const confirmPassword = ref("");
 
 const inputsInfo = computed(() => [
+  {
+    type: "text",
+    size: "is-full",
+    label: "Nome",
+    model: name,
+    placeholder: "Seu Nome",
+    errorMessage: "Campo obrigatório",
+  },
   {
     type: "email",
     size: "is-full",
@@ -22,39 +28,63 @@ const inputsInfo = computed(() => [
     errorMessage: "Campo obrigatório",
   },
   {
+    type: "number",
+    size: "is-half",
+    label: "CPF",
+    model: cpf,
+    placeholder: "Insira o seu CPF",
+    errorMessage: "Campo obrigatório",
+  },
+  {
+    type: "tel",
+    size: "is-half",
+    label: "Telefone",
+    model: phone,
+    placeholder: "Insira o seu telefone",
+    errorMessage: "Campo obrigatório",
+  },
+  {
     type: "password",
-    size: "is-full",
+    size: "is-half",
     label: "Senha",
     model: password,
-    placeholder: "Sua Senha",
+    placeholder: "Crie uma senha",
+    errorMessage: "Campo obrigatório",
+  },
+  {
+    type: "password",
+    size: "is-half",
+    label: "Confirmar senha",
+    model: confirmPassword,
+    placeholder: "Repita a senha",
     errorMessage: "Campo obrigatório",
   },
 ]);
 </script>
 
 <template>
-  <q-page padding class="login">
+  <q-page padding class="sign-up">
     <AuthLayout
-      has-image
+      form-variation="is-large"
       has-checkbox
-      reset-password
+      back-button
+      back-button-link="/login"
       href-submit="#"
-      submit-label="Entrar na Plataforma"
+      submit-label="Criar Conta"
     >
-      <template #title>
-        <BaseText tag="h2" class="auth-title"> Entrar na plataforma </BaseText>
+      <template #main-title>
+        <BaseText tag="h1"> Cadastre-se </BaseText>
       </template>
 
       <template #description>
         <BaseText class="description">
-          Não tem uma conta?
-          <RouterLink to="/cadastro">Cadastre-se gratuitamente</RouterLink>
+          Já possui uma conta?
+          <RouterLink to="/login">Entrar na plataforma</RouterLink>
         </BaseText>
       </template>
 
       <template #input>
         <q-input
-          :modelValue="inputsInfo.model"
           :v-model="model"
           v-for="{
             label,
@@ -67,7 +97,6 @@ const inputsInfo = computed(() => [
           lazy-rules
           outlined
           stack-label
-          @update:modelValue="updateModelValue(inputsInfo)"
           :class="size"
           :label="label"
           :key="label"
@@ -78,14 +107,17 @@ const inputsInfo = computed(() => [
       </template>
 
       <template #checkboxLabel>
-        <BaseText class="auth-checkbox-label"> Manter Conectado </BaseText>
+        <BaseText class="auth-checkbox-label is-sign-up">
+          Li e concordo com os <RouterLink to="#">Termos de uso</RouterLink> e a
+          <RouterLink to="#">Política de privacidade</RouterLink> do sistema.
+        </BaseText>
       </template>
     </AuthLayout>
   </q-page>
 </template>
 
 <style lang="scss" scoped>
-.login {
+.sign-up {
   display: grid;
   place-items: center;
 }

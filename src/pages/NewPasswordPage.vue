@@ -3,58 +3,50 @@ import { computed, ref } from "vue";
 import { AuthLayout } from "src/layouts";
 import { BaseText } from "src/components/ui/base";
 
-const email = ref("");
 const password = ref("");
-
-const updateModelValue = (info) => {
-  return (value) => {
-    info.model.value = value;
-  };
-};
+const confirmPassword = ref("");
 
 const inputsInfo = computed(() => [
   {
-    type: "email",
+    type: "password",
     size: "is-full",
-    label: "Email",
-    model: email,
-    placeholder: "Insira seu e-mail",
+    label: "Nova senha",
+    model: password,
+    placeholder: "Crie uma nova senha",
     errorMessage: "Campo obrigatório",
   },
   {
     type: "password",
     size: "is-full",
-    label: "Senha",
-    model: password,
-    placeholder: "Sua Senha",
+    label: "Confirmar nova senha",
+    model: confirmPassword,
+    placeholder: "Repita a senha",
     errorMessage: "Campo obrigatório",
   },
 ]);
 </script>
 
 <template>
-  <q-page padding class="login">
+  <q-page padding class="new-password">
     <AuthLayout
       has-image
-      has-checkbox
-      reset-password
+      back-button
+      back-button-link="#"
       href-submit="#"
-      submit-label="Entrar na Plataforma"
+      submit-label="Próximo"
     >
       <template #title>
-        <BaseText tag="h2" class="auth-title"> Entrar na plataforma </BaseText>
+        <BaseText tag="h2" class="auth-title"> Crie uma nova senha </BaseText>
       </template>
 
       <template #description>
         <BaseText class="description">
-          Não tem uma conta?
-          <RouterLink to="/cadastro">Cadastre-se gratuitamente</RouterLink>
+          Crie uma nova senha de acesso à sua conta.
         </BaseText>
       </template>
 
       <template #input>
         <q-input
-          :modelValue="inputsInfo.model"
           :v-model="model"
           v-for="{
             label,
@@ -67,7 +59,6 @@ const inputsInfo = computed(() => [
           lazy-rules
           outlined
           stack-label
-          @update:modelValue="updateModelValue(inputsInfo)"
           :class="size"
           :label="label"
           :key="label"
@@ -76,16 +67,12 @@ const inputsInfo = computed(() => [
           :type="type"
         />
       </template>
-
-      <template #checkboxLabel>
-        <BaseText class="auth-checkbox-label"> Manter Conectado </BaseText>
-      </template>
     </AuthLayout>
   </q-page>
 </template>
 
 <style lang="scss" scoped>
-.login {
+.new-password {
   display: grid;
   place-items: center;
 }

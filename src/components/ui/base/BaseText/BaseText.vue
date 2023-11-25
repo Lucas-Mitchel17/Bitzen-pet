@@ -29,15 +29,11 @@ const classes = computed(() => {
   margin: 0;
 }
 .text-h1 {
-  font-size: 25px;
+  font-size: 35px;
   color: $neutral900;
   margin: 40px 0 0;
   font-weight: 600;
   line-height: 60px;
-
-  @media (min-width: $sm) {
-    font-size: 30px;
-  }
 
   @media (min-width: $md) {
     font-size: 40px;
