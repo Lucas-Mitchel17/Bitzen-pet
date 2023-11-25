@@ -58,4 +58,9 @@ const classes = computed(() => {
 .is-blue {
   color: $blue;
 }
+
+.text-p {
+  line-height: 24px;
+  font-size: 16px;
+}
 </style>

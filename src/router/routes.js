@@ -18,6 +18,10 @@ const routes = [
         path: "nova-senha",
         component: () => import("pages/NewPasswordPage.vue"),
       },
+      {
+        path: "seus-pets",
+        component: () => import("pages/YourPetsPage.vue"),
+      },
     ],
   },
 
