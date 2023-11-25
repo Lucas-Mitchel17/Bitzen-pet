@@ -1,21 +1,14 @@
 <script setup>
-import { computed, ref } from "vue";
+import { reactive } from "vue";
 import { AuthLayout } from "src/layouts";
 import { BaseText } from "src/components/ui/base";
 
-const name = ref("");
-const email = ref("");
-const cpf = ref("");
-const phone = ref("");
-const password = ref("");
-const confirmPassword = ref("");
-
-const inputsInfo = computed(() => [
+const fields = reactive([
   {
     type: "text",
     size: "is-full",
     label: "Nome",
-    model: name,
+    model: "",
     placeholder: "Seu Nome",
     errorMessage: "Campo obrigatório",
   },
@@ -23,7 +16,7 @@ const inputsInfo = computed(() => [
     type: "email",
     size: "is-full",
     label: "Email",
-    model: email,
+    model: "",
     placeholder: "Insira seu e-mail",
     errorMessage: "Campo obrigatório",
   },
@@ -31,7 +24,7 @@ const inputsInfo = computed(() => [
     type: "number",
     size: "is-half",
     label: "CPF",
-    model: cpf,
+    model: "",
     placeholder: "Insira o seu CPF",
     errorMessage: "Campo obrigatório",
   },
@@ -39,7 +32,7 @@ const inputsInfo = computed(() => [
     type: "tel",
     size: "is-half",
     label: "Telefone",
-    model: phone,
+    model: "",
     placeholder: "Insira o seu telefone",
     errorMessage: "Campo obrigatório",
   },
@@ -47,7 +40,7 @@ const inputsInfo = computed(() => [
     type: "password",
     size: "is-half",
     label: "Senha",
-    model: password,
+    model: "",
     placeholder: "Crie uma senha",
     errorMessage: "Campo obrigatório",
   },
@@ -55,7 +48,7 @@ const inputsInfo = computed(() => [
     type: "password",
     size: "is-half",
     label: "Confirmar senha",
-    model: confirmPassword,
+    model: "",
     placeholder: "Repita a senha",
     errorMessage: "Campo obrigatório",
   },
@@ -85,24 +78,17 @@ const inputsInfo = computed(() => [
 
       <template #input>
         <q-input
-          :v-model="model"
-          v-for="{
-            label,
-            size,
-            type,
-            model,
-            placeholder,
-            errorMessage,
-          } in inputsInfo"
+          v-model="field.model"
+          v-for="field in fields"
           lazy-rules
           outlined
           stack-label
-          :class="size"
-          :label="label"
-          :key="label"
-          :placeholder="placeholder"
-          :rules="[(val) => (val && val.length > 0) || errorMessage]"
-          :type="type"
+          :class="field.size"
+          :label="field.label"
+          :key="field.label"
+          :placeholder="field.placeholder"
+          :rules="[(val) => (val && val.length > 0) || field.errorMessage]"
+          :type="field.type"
         />
       </template>
 

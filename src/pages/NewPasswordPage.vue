@@ -1,17 +1,14 @@
 <script setup>
-import { computed, ref } from "vue";
+import { reactive } from "vue";
 import { AuthLayout } from "src/layouts";
 import { BaseText } from "src/components/ui/base";
 
-const password = ref("");
-const confirmPassword = ref("");
-
-const inputsInfo = computed(() => [
+const fields = reactive([
   {
     type: "password",
     size: "is-full",
     label: "Nova senha",
-    model: password,
+    model: "",
     placeholder: "Crie uma nova senha",
     errorMessage: "Campo obrigatório",
   },
@@ -19,7 +16,7 @@ const inputsInfo = computed(() => [
     type: "password",
     size: "is-full",
     label: "Confirmar nova senha",
-    model: confirmPassword,
+    model: "",
     placeholder: "Repita a senha",
     errorMessage: "Campo obrigatório",
   },
@@ -47,24 +44,17 @@ const inputsInfo = computed(() => [
 
       <template #input>
         <q-input
-          :v-model="model"
-          v-for="{
-            label,
-            size,
-            type,
-            model,
-            placeholder,
-            errorMessage,
-          } in inputsInfo"
+          v-model="field.model"
+          v-for="field in fields"
           lazy-rules
           outlined
           stack-label
-          :class="size"
-          :label="label"
-          :key="label"
-          :placeholder="placeholder"
-          :rules="[(val) => (val && val.length > 0) || errorMessage]"
-          :type="type"
+          :class="field.size"
+          :label="field.label"
+          :key="field.label"
+          :placeholder="field.placeholder"
+          :rules="[(val) => (val && val.length > 0) || field.errorMessage]"
+          :type="field.type"
         />
       </template>
     </AuthLayout>

@@ -1,23 +1,14 @@
 <script setup>
-import { computed, ref } from "vue";
+import { reactive } from "vue";
 import { AuthLayout } from "src/layouts";
 import { BaseText } from "src/components/ui/base";
 
-const email = ref("");
-const password = ref("");
-
-const updateModelValue = (info) => {
-  return (value) => {
-    info.model.value = value;
-  };
-};
-
-const inputsInfo = computed(() => [
+const inputsInfo = reactive([
   {
     type: "email",
     size: "is-full",
     label: "Email",
-    model: email,
+    model: "",
     placeholder: "Insira seu e-mail",
     errorMessage: "Campo obrigatório",
   },
@@ -25,7 +16,7 @@ const inputsInfo = computed(() => [
     type: "password",
     size: "is-full",
     label: "Senha",
-    model: password,
+    model: "",
     placeholder: "Sua Senha",
     errorMessage: "Campo obrigatório",
   },
@@ -54,26 +45,17 @@ const inputsInfo = computed(() => [
 
       <template #input>
         <q-input
-          :modelValue="inputsInfo.model"
-          :v-model="model"
-          v-for="{
-            label,
-            size,
-            type,
-            model,
-            placeholder,
-            errorMessage,
-          } in inputsInfo"
+          v-model="input.model"
+          v-for="input in inputsInfo"
+          :key="input.label"
           lazy-rules
           outlined
           stack-label
-          @update:modelValue="updateModelValue(inputsInfo)"
-          :class="size"
-          :label="label"
-          :key="label"
-          :placeholder="placeholder"
-          :rules="[(val) => (val && val.length > 0) || errorMessage]"
-          :type="type"
+          :class="input.size"
+          :label="input.label"
+          :placeholder="input.placeholder"
+          :rules="[(val) => (val && val.length > 0) || input.errorMessage]"
+          :type="input.type"
         />
       </template>
 

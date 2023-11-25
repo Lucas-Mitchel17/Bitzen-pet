@@ -1,16 +1,14 @@
 <script setup>
-import { computed, ref } from "vue";
+import { reactive } from "vue";
 import { AuthLayout } from "src/layouts";
 import { BaseText } from "src/components/ui/base";
 
-const email = ref("");
-
-const inputsInfo = computed(() => [
+const fields = reactive([
   {
     type: "email",
     size: "is-full",
     label: "Email",
-    model: email,
+    model: "",
     placeholder: "Insira seu e-mail",
     errorMessage: "Campo obrigatório",
   },
@@ -39,24 +37,17 @@ const inputsInfo = computed(() => [
 
       <template #input>
         <q-input
-          :v-model="model"
-          v-for="{
-            label,
-            size,
-            type,
-            model,
-            placeholder,
-            errorMessage,
-          } in inputsInfo"
+          v-model="field.model"
+          v-for="field in fields"
           lazy-rules
           outlined
           stack-label
-          :class="size"
-          :label="label"
-          :key="label"
-          :placeholder="placeholder"
-          :rules="[(val) => (val && val.length > 0) || errorMessage]"
-          :type="type"
+          :class="field.size"
+          :label="field.label"
+          :key="field.label"
+          :placeholder="field.placeholder"
+          :rules="[(val) => (val && val.length > 0) || field.errorMessage]"
+          :type="field.type"
         />
       </template>
     </AuthLayout>
