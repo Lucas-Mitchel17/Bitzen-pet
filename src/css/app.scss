@@ -20,6 +20,43 @@ p {
 }
 
 //Forms
+.q-form {
+  .q-field__control {
+    color: $blue;
+    height: 49px;
+    border-radius: 8px;
+    padding: 0 16px;
+
+    &:hover::before {
+      border-color: $blue;
+    }
+  }
+
+  input::placeholder {
+    color: $neutral400;
+    font-size: 16px;
+    line-height: 24px;
+  }
+
+  .q-field {
+    margin-top: 35px;
+  }
+
+  .q-field--labeled .q-field__native,
+  .q-field--labeled .q-field__prefix,
+  .q-field--labeled .q-field__suffix {
+    padding: 12px 0 13px;
+  }
+
+  .q-field__label {
+    color: $neutral700;
+    font-size: 21px;
+    font-weight: 500;
+    left: -16px;
+    line-height: 24px;
+    top: -15px;
+  }
+}
 
 //Reset Quasar button styles
 .q-btn--actionable.q-btn--standard:active:before,

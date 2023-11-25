@@ -104,7 +104,6 @@ const inputsInfo = computed(() => [
         <RouterLink to="#">Política de privacidade</RouterLink> do sistema.
       </template>
     </AuthLayout>
-    <q-input v-model="name" label="Standard" />
   </q-page>
 </template>
 

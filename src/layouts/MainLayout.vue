@@ -26,7 +26,7 @@ export default defineComponent({
 
 <style lang="scss">
 .top-btn {
-  background-color: aqua;
-  color: black;
+  background-color: $blue;
+  color: white;
 }
 </style>
