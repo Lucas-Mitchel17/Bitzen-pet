@@ -1,7 +1,11 @@
 <template>
   <q-layout view="hHh Lpr fFf">
     <q-page-container>
-      <router-view />
+      <router-view v-slot="{ Component }">
+        <transition>
+          <component :is="Component" />
+        </transition>
+      </router-view>
     </q-page-container>
 
     <q-page-scroller
@@ -13,16 +17,6 @@
     </q-page-scroller>
   </q-layout>
 </template>
-
-<script>
-import { defineComponent } from "vue";
-
-export default defineComponent({
-  name: "MainLayout",
-
-  setup() {},
-});
-</script>
 
 <style lang="scss">
 .top-btn {

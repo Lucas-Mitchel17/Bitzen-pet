@@ -1,10 +1,13 @@
 <script setup>
 import { ref, reactive } from "vue";
+import { useRouter } from "vue-router";
 import { api } from "boot/axios";
 import { Notify } from "quasar";
 import { apiErrorHandler } from "src/helpers";
 import { AuthLayout } from "src/layouts";
 import { BaseText } from "src/components/ui/base";
+
+const ROUTER = useRouter();
 
 const disabled = ref(false);
 const loading = ref(false);
@@ -16,7 +19,7 @@ const fields = reactive([
     type: "text",
     size: "is-full",
     label: "Nome",
-    model: "Lucas",
+    model: "",
     placeholder: "Seu Nome",
     errorMessage: "",
   },
@@ -25,7 +28,7 @@ const fields = reactive([
     type: "email",
     size: "is-full",
     label: "Email",
-    model: "lucas@gmail.com",
+    model: "",
     placeholder: "Insira seu e-mail",
     errorMessage: "",
   },
@@ -34,7 +37,7 @@ const fields = reactive([
     type: "text",
     size: "is-half",
     label: "CPF",
-    model: "15115732602",
+    model: "",
     placeholder: "Insira o seu CPF",
     errorMessage: "",
     mask: "XXX.XXX.XXX-XX",
@@ -44,7 +47,7 @@ const fields = reactive([
     type: "tel",
     size: "is-half",
     label: "Telefone",
-    model: "31987698188",
+    model: "",
     placeholder: "Insira o seu telefone",
     errorMessage: "",
     mask: "XX XXXX-XXXX",
@@ -54,7 +57,7 @@ const fields = reactive([
     type: "password",
     size: "is-half",
     label: "Senha",
-    model: "12345678",
+    model: "",
     placeholder: "Crie uma senha",
     errorMessage: "",
   },
@@ -63,7 +66,7 @@ const fields = reactive([
     type: "password",
     size: "is-half",
     label: "Confirmar senha",
-    model: "12345678",
+    model: "",
     placeholder: "Repita a senha",
     errorMessage: "",
   },
@@ -99,7 +102,12 @@ function register(payload) {
   return api
     .post("/register", payload)
     .then((response) => {
-      console.log(response);
+      Notify.create({
+        type: "positive",
+        message: "Cadastro realizado com sucesso!",
+      });
+
+      ROUTER.push("/entrar");
     })
     .catch((error) => {
       const { message, data } = apiErrorHandler(error);
@@ -120,7 +128,7 @@ function register(payload) {
   <q-page padding class="sign-up">
     <AuthLayout
       back-button
-      back-button-link="/login"
+      back-button-link="/entrar"
       form-variation="is-large"
       submit-label="Criar Conta"
     >
@@ -177,7 +185,13 @@ function register(payload) {
           </div>
         </div>
 
-        <q-btn type="submit" class="btn is-blue is-full" label="Criar conta" />
+        <q-btn
+          :disable="!checkbox"
+          :loading="loading"
+          type="submit"
+          class="btn is-blue is-full"
+          label="Criar conta"
+        />
       </q-form>
     </AuthLayout>
   </q-page>
