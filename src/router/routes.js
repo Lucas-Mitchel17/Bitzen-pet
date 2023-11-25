@@ -5,7 +5,10 @@ const routes = [
     children: [
       { path: "", component: () => import("pages/IndexPage.vue") },
       { path: "entrar", component: () => import("pages/LoginPage.vue") },
-      { path: "cadastro", component: () => import("pages/SignUpPage.vue") },
+      {
+        path: "cadastro",
+        component: () => import("pages/SignUpPage/SignUpPage.vue"),
+      },
       {
         path: "esqueceu-sua-senha",
         component: () => import("pages/ForgotPasswordPage.vue"),
