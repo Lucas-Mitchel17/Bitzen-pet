@@ -29,9 +29,11 @@ const classes = computed(() => {
   margin: 0;
 }
 .text-h1 {
-  font-size: 20px;
-  color: $blue;
+  font-size: 25px;
+  color: $neutral900;
   margin: 40px 0 0;
+  font-weight: 600;
+  line-height: 60px;
 
   @media (min-width: $sm) {
     font-size: 30px;
@@ -55,5 +57,9 @@ const classes = computed(() => {
 .text-h4 {
   font-size: 20px;
   margin: 0 0 10px;
+}
+
+.is-blue {
+  color: $blue;
 }
 </style>
