@@ -12,3 +12,81 @@ a {
 p {
   margin: 0;
 }
+
+.q-page-container {
+  margin: auto;
+  max-width: 1440px;
+  width: 100%;
+}
+
+//Forms
+
+//Reset Quasar button styles
+.q-btn--actionable.q-btn--standard:active:before,
+.q-btn--actionable.q-btn--standard.q-btn--active:before,
+.q-btn:before {
+  box-shadow: none;
+}
+
+// Button Styles
+.btn {
+  background-color: var(--back-color);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  box-shadow: none;
+  color: var(--color);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 24px;
+  margin-top: 41px;
+  min-height: 48px;
+  outline: none;
+  text-align: center;
+  text-transform: none;
+  transition: ease-in 0.1s;
+
+  &.is-blue {
+    --color: #fff;
+    --border-color: #{$blue};
+    --back-color: #{$blue};
+
+    &:hover {
+      --back-color: transparent;
+      --color: #{$blue};
+    }
+  }
+
+  &.is-sign-up {
+    font-size: 14px;
+    line-height: 21px;
+    margin-top: 41px;
+  }
+
+  &.is-full {
+    width: 100%;
+  }
+
+  &.is-back {
+    --back-color: transparent;
+    --color: #{$blue};
+    border: none;
+    display: flex;
+    margin-bottom: 24px;
+    margin-top: 0;
+    min-height: 24px;
+    padding: 0;
+
+    .q-btn__content {
+      display: flex;
+      gap: 16px;
+    }
+
+    svg {
+      stroke: $blue;
+    }
+
+    &:hover {
+      padding: 0 16px 0 0;
+    }
+  }
+}
