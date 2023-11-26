@@ -20,7 +20,7 @@ const fields = reactive([
     <AuthLayout
       hasImage
       backButton
-      backButtonLink="/login"
+      backButtonLink="/entrar"
       hrefSubmit="#"
       submitLabel="Próximo"
     >
@@ -34,6 +34,8 @@ const fields = reactive([
           a sua conta.
         </BaseText>
       </template>
+
+      <BaseText tag="h2" class="auth-title"> Em Breve </BaseText>
 
       <template #input>
         <q-input
