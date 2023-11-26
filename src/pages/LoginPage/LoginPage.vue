@@ -7,13 +7,12 @@ import { apiErrorHandler, formHelper } from "src/helpers";
 import { useUserStore } from "src/stores";
 import { AuthLayout } from "src/layouts";
 import { BaseText } from "src/components/ui/base";
-import { useSignUpFormFields } from "./composables";
-import { SignUpForm } from "./sections";
+import { LoginForm } from "./sections";
+import { useLoginForm } from "./composables";
 
 const ROUTER = useRouter();
-const { fields } = useSignUpFormFields();
-
 const USER_STORE = useUserStore();
+const { fields } = useLoginForm();
 
 const { getPayload } = formHelper();
 
@@ -24,13 +23,12 @@ async function onSubmit() {
   const payload = getPayload(fields);
 
   loading.value = true;
-  await register(payload);
-  loading.value = false;
+  await login(payload).finally(() => (loading.value = false));
 }
 
-async function register(payload) {
+async function login(payload) {
   return await api
-    .post("/register", payload)
+    .post("/login", payload)
     .then((response) => response.data.data)
     .then(({ user, token }) => {
       USER_STORE.$patch(user);
@@ -39,10 +37,10 @@ async function register(payload) {
 
       Notify.create({
         type: "positive",
-        message: "Cadastro realizado com sucesso!",
+        message: "Login efetuado com sucesso!",
       });
 
-      ROUTER.push("/entrar");
+      ROUTER.push("/seus-pets");
     })
     .catch((error) => {
       const { message, data } = apiErrorHandler(error);
@@ -63,36 +61,31 @@ async function register(payload) {
 </script>
 
 <template>
-  <q-page padding class="sign-up">
-    <AuthLayout
-      back-button
-      back-button-link="/entrar"
-      form-variation="is-large"
-      submit-label="Criar Conta"
-    >
-      <template #main-title>
-        <BaseText tag="h1"> Cadastre-se </BaseText>
+  <q-page padding class="login">
+    <AuthLayout has-image>
+      <template #title>
+        <BaseText tag="h2" class="auth-title"> Entrar na plataforma </BaseText>
       </template>
 
       <template #description>
         <BaseText class="description">
-          Já possui uma conta?
-          <RouterLink to="/login">Entrar na plataforma</RouterLink>
+          Não tem uma conta?
+          <RouterLink to="/cadastro">Cadastre-se gratuitamente</RouterLink>
         </BaseText>
       </template>
 
-      <SignUpForm
+      <LoginForm
         :disabled="disabled"
         :fields="fields"
         :loading="loading"
-        @onSubmitSignUpForm="onSubmit"
+        @onSubmitLoginForm="onSubmit"
       />
     </AuthLayout>
   </q-page>
 </template>
 
 <style lang="scss" scoped>
-.sign-up {
+.login {
   display: grid;
   place-items: center;
 }

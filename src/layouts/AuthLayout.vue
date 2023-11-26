@@ -56,32 +56,6 @@ const sizes = computed(() => {
 
     <slot name="description"></slot>
 
-    <!-- TODO remove this -->
-    <!-- <q-form class="q-gutter-md auth-form">
-      <slot name="fields"></slot>
-
-      <div class="auth-check-pass" v-if="hasCheckbox">
-        <div class="auth-checkbox">
-          <q-checkbox class="auth-checkbox-icon" v-model="checkbox" />
-
-          <slot name="checkboxLabel"></slot>
-        </div>
-
-        <div v-if="resetPassword" class="auth-forgot-password">
-          <router-link to="/esqueceu-sua-senha">
-            <BaseText class="is-blue"> Esqueceu sua senha? </BaseText>
-          </router-link>
-        </div>
-      </div>
-    </q-form>
-
-    <router-link class="auth-submit" :to="hrefSubmit">
-      <q-btn type="submit" class="btn is-blue is-full" :label="submitLabel" />
-    </router-link>
-
-    <slot name="send-code"></slot> -->
-    <!-- TODO remove this -->
-
     <slot></slot>
   </section>
 </template>
