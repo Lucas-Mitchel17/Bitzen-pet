@@ -27,7 +27,7 @@ import { BaseText } from "src/components/ui/base";
             <q-menu>
               <q-list>
                 <q-item clickable v-close-popup>
-                  <q-item-section>Minhas informações</q-item-section>
+                  <q-item-section>Em Breve...</q-item-section>
                 </q-item>
               </q-list>
             </q-menu>

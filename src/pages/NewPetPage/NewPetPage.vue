@@ -17,8 +17,8 @@ const fields = reactive([
     type: "text",
     size: "is-full",
     label: "Nome",
-    model: "Teste",
-    placeholder: "Insira o nome do pet",
+    model: "",
+    placeholder: "Nome do pet",
     errorMessage: "",
   },
   {
@@ -26,8 +26,8 @@ const fields = reactive([
     type: "text",
     size: "is-full",
     label: "Cor",
-    model: "Branca",
-    placeholder: "Insira a cor do seu Pet",
+    model: "",
+    placeholder: "Cor do pet",
     errorMessage: "",
   },
   {
@@ -35,17 +35,17 @@ const fields = reactive([
     type: "date",
     size: "is-half",
     label: "Data de Nascimento",
-    model: "2022-05-05",
-    placeholder: "",
+    model: "",
+    placeholder: "Selecione",
     errorMessage: "",
   },
   {
     name: "description",
     type: "textarea",
     size: "is-full",
-    label: "Descrição",
-    model: "asldkasd alskdjaslkdj laksjdalksjd aslkdjaslkd asldkjaskldjas ",
-    placeholder: "Insira uma descrição do seu pet",
+    label: "Sobre o pet",
+    model: "",
+    placeholder: "Escreva um pequeno texto sobre o pet",
     errorMessage: "",
   },
   {
@@ -54,7 +54,7 @@ const fields = reactive([
     size: "is-full",
     label: "Foto",
     model: "",
-    placeholder: "Insira uma foto para seu Pet",
+    placeholder: "Clique para adicionar uma imagem",
     errorMessage: "",
     multiple: false,
   },
@@ -142,80 +142,10 @@ async function updatePet(payload) {
       }
     });
 }
-
-async function getPetDetails(id) {
-  loading.value = true;
-
-  return await api
-    .get(`/pets/${id}`)
-    .then((response) => response.data.data)
-    .then(({ data }) => ({
-      // TODO: Preencher os campos com os valores
-    }))
-    .catch((error) => {
-      const { message, data } = apiErrorHandler(error);
-
-      if (message === "MISSING_AUTH") {
-        ROUTER.push("/entrar");
-        return;
-      }
-
-      if (data) {
-        Notify.create({ type: "negative", message });
-
-        fields.forEach((field) => {
-          const hasKey = data.hasOwnProperty(field.name);
-
-          if (hasKey) {
-            field.errorMessage = data[field.name][0];
-          }
-        });
-      }
-    });
-}
-
-// TODO : Criar confirmação de deletar. O Botao que confirma é que chama essa fu
-async function deletePet(id) {
-  loading.value = true;
-
-  return await api
-    .delete(`/pets/${id}`)
-    .then((response) => response.data.data)
-    .then(({ data }) => {
-      Notify.create({
-        type: "positive",
-        message: "Pet deletado com sucesso!",
-      });
-
-      ROUTER.push("/seus-pets");
-    })
-    .catch((error) => {
-      const { message, data } = apiErrorHandler(error);
-
-      if (message === "MISSING_AUTH") {
-        ROUTER.push("/entrar");
-        return;
-      }
-
-      if (data) {
-        Notify.create({ type: "negative", message });
-
-        fields.forEach((field) => {
-          const hasKey = data.hasOwnProperty(field.name);
-
-          if (hasKey) {
-            field.errorMessage = data[field.name][0];
-          }
-        });
-      }
-    });
-}
 </script>
 
 <template>
-  <q-page padding>
-    <q-btn label="CRIAR" @click="onSubmit" :loading="loading" />
-
+  <q-page padding class="new-pet">
     <q-input
       v-model="field.model"
       v-for="field in fields"
@@ -237,7 +167,30 @@ async function deletePet(id) {
         <div>{{ field.errorMessage }}</div>
       </template>
     </q-input>
+
+    <q-btn
+      class="btn is-blue"
+      label="Criar Pet"
+      @click="onSubmit"
+      :loading="loading"
+    />
   </q-page>
 </template>
 
-<style lang="scss" scoped></style>
+<style lang="scss">
+.new-pet {
+  padding: 40px 30px;
+
+  .new-pet-btn {
+    margin-bottom: 40px;
+  }
+
+  .q-field--with-bottom {
+    padding-bottom: 60px;
+  }
+
+  .q-field--outlined .q-field__control {
+    height: auto !important;
+  }
+}
+</style>

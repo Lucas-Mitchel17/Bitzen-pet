@@ -8,7 +8,7 @@ import { BaseText } from "src/components/ui/base";
 
 const ROUTER = useRouter();
 
-const disabled = ref(false); // Adicionar disabled ao botao de criar quando em loading
+const disabled = ref(false);
 const loading = ref(false);
 const pets = ref([]);
 const pagination = ref(1);
@@ -19,37 +19,42 @@ onMounted(
   async () => await getPetsList().finally(() => (loading.value = false))
 );
 
-// async function getPetsInfos() {
-//   loading.value = true;
+async function deletePet(id) {
+  loading.value = true;
 
-//   return await api
-//     .get(`/pets/${id}`)
-//     .then((response) => response.data)
-//     .then(({ data }) => {
-//       console.log("Infos", data);
-//       pets.value = data;
-//     })
-//     .catch((error) => {
-//       const { message, data } = apiErrorHandler(error);
+  return await api
+    .delete(`/pets/${id}`)
+    .then((response) => response.data)
+    .then(({ message }) => {
+      if (message === "Sucesso!") {
+        Notify.create({
+          type: "positive",
+          message: "Pet deletado com sucesso!",
+        });
+        window.location.reload();
+      }
+    })
+    .catch((error) => {
+      const { message, data } = apiErrorHandler(error);
 
-//       if (message === "MISSING_AUTH") {
-//         ROUTER.push("/entrar");
-//         return;
-//       }
+      if (message === "MISSING_AUTH") {
+        ROUTER.push("/entrar");
+        return;
+      }
 
-//       if (data) {
-//         Notify.create({ type: "negative", message });
+      if (data) {
+        Notify.create({ type: "negative", message });
 
-//         fields.forEach((field) => {
-//           const hasKey = data.hasOwnProperty(field.name);
+        fields.forEach((field) => {
+          const hasKey = data.hasOwnProperty(field.name);
 
-//           if (hasKey) {
-//             field.errorMessage = data[field.name][0];
-//           }
-//         });
-//       }
-//     });
-// }
+          if (hasKey) {
+            field.errorMessage = data[field.name][0];
+          }
+        });
+      }
+    });
+}
 
 async function getPetsList() {
   loading.value = true;
@@ -60,7 +65,6 @@ async function getPetsList() {
     .get(URL)
     .then((response) => response.data.data)
     .then(({ data }) => {
-      console.log(data);
       pets.value = data;
     })
     .catch((error) => {
@@ -154,12 +158,12 @@ async function getPetsList() {
 
               <BaseText class="pet-info pet-age">
                 <span class="details-menu-mobile">Idade:</span>
-                1 ano
+                Em breve
               </BaseText>
 
               <BaseText class="pet-info pet-color">
                 <span class="details-menu-mobile">Cor:</span>
-                Pintado
+                Em Breve
               </BaseText>
             </div>
 
@@ -213,30 +217,36 @@ async function getPetsList() {
                 </svg>
               </q-btn>
             </div>
+
+            <q-dialog v-model="confirmationModal" class="confirmation-modal">
+              <q-card>
+                <q-card-section>
+                  <BaseText tag="h3">Atenção</BaseText>
+                </q-card-section>
+
+                <q-card-section class="q-pt-none">
+                  <BaseText>
+                    Você está prestes a apagar os dados do seu Pet. Deseja mesmo
+                    fazer isso ?
+                  </BaseText>
+                </q-card-section>
+
+                <q-card-actions align="right">
+                  <q-btn flat label="Cancelar" v-close-popup />
+                  <q-btn
+                    flat
+                    label="Apagar"
+                    color="warning"
+                    @click="deletePet(pet.id)"
+                    v-close-popup
+                  />
+                </q-card-actions>
+              </q-card>
+            </q-dialog>
           </li>
         </ul>
       </div>
     </section>
-
-    <q-dialog v-model="confirmationModal" class="confirmation-modal">
-      <q-card>
-        <q-card-section>
-          <BaseText tag="h3">Atenção</BaseText>
-        </q-card-section>
-
-        <q-card-section class="q-pt-none">
-          <BaseText>
-            Você está prestes a apagar os dados do seu Pet. Deseja mesmo fazer
-            isso ?
-          </BaseText>
-        </q-card-section>
-
-        <q-card-actions align="right">
-          <q-btn flat label="Cancelar" v-close-popup />
-          <q-btn flat label="Apagar" color="warning" />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
   </q-page>
 </template>
 
@@ -444,6 +454,15 @@ async function getPetsList() {
               }
             }
           }
+
+          .confirmation-modal {
+            .text-h3 {
+              color: $neutral900;
+            }
+            .q-pt-none {
+              color: $neutral800;
+            }
+          }
         }
       }
     }
@@ -451,15 +470,6 @@ async function getPetsList() {
 
   .btn {
     margin: 0;
-  }
-}
-
-.confirmation-modal {
-  .text-h3 {
-    color: $neutral900;
-  }
-  .q-pt-none {
-    color: $neutral800;
   }
 }
 </style>

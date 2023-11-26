@@ -1,18 +1,26 @@
 <script setup>
-import { onMounted, ref } from "vue";
+import { ref, watch, onBeforeMount } from "vue";
 import { useRoute } from "vue-router";
 import { TheNavbar } from "src/components/ui/unique";
 
 const hasNavbar = ref(true);
 const ROUTE = useRoute();
 
-onMounted(() => toggleNavbar());
-
 function toggleNavbar() {
-  if (!ROUTE.meta.requiresAuth) {
-    hasNavbar.value = false;
-  }
+  hasNavbar.value =
+    ROUTE.meta.requiresAuth !== undefined && ROUTE.meta.requiresAuth;
 }
+
+// Call toggleNavbar initially on component mount
+onBeforeMount(toggleNavbar);
+
+// Watch for changes in route meta fields
+watch(
+  () => ROUTE.meta.requiresAuth,
+  () => {
+    toggleNavbar();
+  }
+);
 </script>
 
 <template>
