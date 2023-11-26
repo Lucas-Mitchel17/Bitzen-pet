@@ -3,7 +3,8 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { api } from "boot/axios";
 import { Notify } from "quasar";
-import { apiErrorHandler } from "src/helpers";
+import { apiErrorHandler, formHelper } from "src/helpers";
+import { useUserStore } from "src/stores";
 import { AuthLayout } from "src/layouts";
 import { BaseText } from "src/components/ui/base";
 import { useSignUpFormFields } from "./composables";
@@ -12,42 +13,30 @@ import { SignUpForm } from "./sections";
 const ROUTER = useRouter();
 const { fields } = useSignUpFormFields();
 
+const USER_STORE = useUserStore();
+
+const { getPayload } = formHelper();
+
 const disabled = ref(false);
 const loading = ref(false);
 
 async function onSubmit() {
-  const payload = getPayload();
+  const payload = getPayload(fields);
 
   loading.value = true;
   await register(payload);
   loading.value = false;
 }
 
-function getPayload() {
-  const payload = {};
-
-  fields.forEach(({ name, model, mask, type }) => {
-    if (type === "tel") {
-      payload[name] = `${model.substring(0, 2)} ${model.substring(2)}`;
-      return;
-    }
-
-    if (mask) {
-      payload[name] = model.replace(/[ .-]/g, "");
-      return;
-    }
-
-    payload[name] = model;
-  });
-
-  return payload;
-}
-
-// TODO :: Move this to services
 function register(payload) {
   return api
     .post("/register", payload)
-    .then((response) => {
+    .then((response) => response.data.data)
+    .then(({ user, token }) => {
+      USER_STORE.$patch(user);
+
+      localStorage.setItem("AUTH_TOKEN", token);
+
       Notify.create({
         type: "positive",
         message: "Cadastro realizado com sucesso!",
