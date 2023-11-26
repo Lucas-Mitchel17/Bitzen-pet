@@ -58,12 +58,6 @@ defineProps({
           <RouterLink to="#">Política de privacidade</RouterLink> do sistema.
         </BaseText>
       </div>
-
-      <div class="auth-forgot-password">
-        <router-link to="/esqueceu-sua-senha">
-          <BaseText class="is-blue"> Esqueceu sua senha? </BaseText>
-        </router-link>
-      </div>
     </div>
 
     <q-btn

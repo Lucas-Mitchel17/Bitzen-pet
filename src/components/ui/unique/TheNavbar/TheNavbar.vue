@@ -22,12 +22,12 @@ import { BaseText } from "src/components/ui/base";
 
         <div class="nav-link-profile">
           <button class="btn profile-button">
-            <q-avatar>AM</q-avatar>
+            <q-avatar>LM</q-avatar>
 
             <q-menu>
               <q-list>
                 <q-item clickable v-close-popup>
-                  <q-item-section>New tab</q-item-section>
+                  <q-item-section>Minhas informações</q-item-section>
                 </q-item>
               </q-list>
             </q-menu>
@@ -46,6 +46,11 @@ import { BaseText } from "src/components/ui/base";
       </div>
     </div>
   </nav>
+  <div class="nav-info">
+    <div class="nav-info-container">
+      <BaseText tag="h2">Seus Pets</BaseText>
+    </div>
+  </div>
 </template>
 
 <style lang="scss">
@@ -61,6 +66,7 @@ import { BaseText } from "src/components/ui/base";
     height: 100%;
     margin: auto;
     max-width: 1440px;
+    padding: 0 20px;
 
     & > .nav-links {
       align-items: center;
@@ -109,8 +115,13 @@ import { BaseText } from "src/components/ui/base";
 
       & > .nav-link-profile {
         & > .profile-button {
+          align-items: center;
           background: transparent;
           border-radius: 50%;
+          cursor: pointer;
+          display: flex;
+          gap: 5px;
+          margin: 0;
           padding: 0;
 
           .q-avatar {
@@ -121,9 +132,26 @@ import { BaseText } from "src/components/ui/base";
             height: 48px;
             width: 48px;
           }
+
+          svg {
+            fill: $neutral500;
+          }
         }
       }
     }
+  }
+}
+.nav-info {
+  box-shadow: 0 1px 2px 0 #00000014;
+  height: 74px;
+
+  & > .nav-info-container {
+    align-items: center;
+    display: flex;
+    height: 100%;
+    margin: auto;
+    max-width: 1440px;
+    padding: 0 20px;
   }
 }
 </style>

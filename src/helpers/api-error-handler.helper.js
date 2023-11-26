@@ -1,3 +1,6 @@
+import { useRouter } from "vue-router";
+import { Notify } from "quasar";
+
 export default function (error) {
   function throwDeveloperError(error) {
     if (error.name === "AxiosError") {
@@ -16,7 +19,12 @@ export default function (error) {
   function getUserErrors(error) {
     if (error.name === "AxiosError") {
       const { response } = error;
-      const { message, data } = response.data;
+      let { message, data } = response.data;
+
+      if (message === "Você não está autenticado.") {
+        Notify.create({ type: "negative", message });
+        message = "MISSING_AUTH";
+      }
 
       return {
         data,

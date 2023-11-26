@@ -31,9 +31,11 @@ async function login(payload) {
     .post("/login", payload)
     .then((response) => response.data.data)
     .then(({ user, token }) => {
-      USER_STORE.$patch(user);
+      api.defaults.headers.common["Authorization"] = "Bearer " + token;
 
       localStorage.setItem("AUTH_TOKEN", token);
+
+      USER_STORE.$patch(user);
 
       Notify.create({
         type: "positive",

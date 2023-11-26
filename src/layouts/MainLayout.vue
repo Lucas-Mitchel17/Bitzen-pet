@@ -1,5 +1,24 @@
+<script setup>
+import { onMounted, ref } from "vue";
+import { useRoute } from "vue-router";
+import { TheNavbar } from "src/components/ui/unique";
+
+const hasNavbar = ref(true);
+const ROUTE = useRoute();
+
+onMounted(() => toggleNavbar());
+
+function toggleNavbar() {
+  if (!ROUTE.meta.requiresAuth) {
+    hasNavbar.value = false;
+  }
+}
+</script>
+
 <template>
   <q-layout view="hHh Lpr fFf">
+    <TheNavbar v-if="hasNavbar" />
+
     <q-page-container>
       <router-view v-slot="{ Component }">
         <transition>

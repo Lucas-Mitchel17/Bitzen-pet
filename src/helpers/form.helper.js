@@ -8,6 +8,12 @@ export default function () {
         return;
       }
 
+      // NOTE: handle attr multiple here in the future
+      if (type === "file") {
+        payload[name] = model[0];
+        return;
+      }
+
       if (mask) {
         payload[name] = model.replace(/[ .-]/g, "");
         return;
