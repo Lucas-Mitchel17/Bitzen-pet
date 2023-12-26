@@ -1,21 +1,34 @@
 <script setup>
-import { onMounted, ref } from "vue";
+import { onBeforeMount, ref, watch, reactive } from "vue";
 import { useRouter } from "vue-router";
 import { Notify } from "quasar";
 import { apiErrorHandler } from "src/helpers";
 import { api } from "boot/axios";
+import debounce from "lodash.debounce";
 import { BaseText } from "src/components/ui/base";
+import { NoPets, SearchRow } from "./sections";
 
 const ROUTER = useRouter();
 
 const disabled = ref(false);
 const loading = ref(false);
 const pets = ref([]);
-const pagination = ref(1);
-const search = ref();
-const confirmationModal = ref(false);
+const pagination = reactive({
+  totalPages: 0,
+  currentPage: 1,
+});
+const searchText = ref("");
+const filteredPets = debounce(() => {
+  pagination.currentPage = 1;
+  getPetsList();
+}, 350);
 
-onMounted(
+watch(searchText, () => {
+  loading.value = true;
+  filteredPets();
+});
+
+onBeforeMount(
   async () => await getPetsList().finally(() => (loading.value = false))
 );
 
@@ -59,77 +72,55 @@ async function deletePet(id) {
 async function getPetsList() {
   loading.value = true;
 
-  const URL = search.value ? `/pets/search=${search.value}` : `/pets/`;
+  const URL = "/pets";
 
-  return await api
-    .get(URL)
-    .then((response) => response.data.data)
-    .then(({ data }) => {
-      pets.value = data;
-    })
-    .catch((error) => {
-      const { message, data } = apiErrorHandler(error);
-
-      if (message === "MISSING_AUTH") {
-        ROUTER.push("/entrar");
-        return;
-      }
-
-      if (data) {
-        Notify.create({ type: "negative", message });
-
-        fields.forEach((field) => {
-          const hasKey = data.hasOwnProperty(field.name);
-
-          if (hasKey) {
-            field.errorMessage = data[field.name][0];
-          }
-        });
-      }
+  try {
+    const response = await api.get(URL, {
+      params: { search: searchText.value, page: pagination.currentPage },
     });
+    const data = response.data.data;
+    console.log("🚀 ~ file: YourPetsPage.vue:80 ~ getPetsList ~ data:", data);
+
+    pagination.currentPage = data.current_page;
+    pagination.totalPages = data.last_page;
+
+    pets.value = data.data;
+  } catch (error) {
+    const { message, data } = apiErrorHandler(error);
+
+    if (message === "MISSING_AUTH") {
+      ROUTER.push("/entrar");
+      return;
+    }
+
+    if (data) {
+      Notify.create({ type: "negative", message });
+
+      fields.forEach((field) => {
+        const hasKey = data.hasOwnProperty(field.name);
+
+        if (hasKey) {
+          field.errorMessage = data[field.name][0];
+        }
+      });
+    }
+  } finally {
+    loading.value = false;
+  }
 }
 </script>
 
 <template>
   <q-page padding class="your-pets">
-    <section class="pets-search-new">
-      <q-input class="input-search" outlined placeholder="Pesquisar um pet">
-        <template v-slot:prepend>
-          <q-icon name="search" />
-        </template>
+    <SearchRow :disabled="disabled" :loading="loading" v-model="searchText" />
 
-        <template v-slot:append>
-          <q-btn
-            :disable="loading || disabled"
-            class="btn is-blue is-input-btn"
-            label="Buscar"
-          />
-        </template>
-      </q-input>
+    <NoPets
+      v-if="!pets.length && !loading"
+      :is-search-empty="!searchText"
+      :is-pets-empty="!pets.length"
+    />
 
-      <router-link to="/cadastrar-novo-pet">
-        <q-btn :disable="loading || disabled" class="btn is-blue new-pet-btn">
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-          >
-            <path
-              d="M12 9V15M15 12H9M21 12C21 13.1819 20.7672 14.3522 20.3149 15.4442C19.8626 16.5361 19.1997 17.5282 18.364 18.364C17.5282 19.1997 16.5361 19.8626 15.4442 20.3149C14.3522 20.7672 13.1819 21 12 21C10.8181 21 9.64778 20.7672 8.55585 20.3149C7.46392 19.8626 6.47177 19.1997 5.63604 18.364C4.80031 17.5282 4.13738 16.5361 3.68508 15.4442C3.23279 14.3522 3 13.1819 3 12C3 9.61305 3.94821 7.32387 5.63604 5.63604C7.32387 3.94821 9.61305 3 12 3C14.3869 3 16.6761 3.94821 18.364 5.63604C20.0518 7.32387 21 9.61305 21 12Z"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-          </svg>
-
-          Cadastrar pet
-        </q-btn>
-      </router-link>
-    </section>
-
-    <section class="pets-list">
+    <section v-else class="pets-list">
       <div class="list-title">
         <BaseText tag="h3">Lista de pets</BaseText>
       </div>
@@ -144,7 +135,9 @@ async function getPetsList() {
       </div>
 
       <div class="pet-card-row">
-        <ul class="pet-row">
+        <q-skeleton v-if="loading" height="116px" width="100%" />
+
+        <ul v-if="!loading" class="pet-row">
           <li class="pet-card" v-for="(pet, id) in pets" :key="id">
             <div class="pet-infos">
               <div class="pet-info">
@@ -158,12 +151,12 @@ async function getPetsList() {
 
               <BaseText class="pet-info pet-age">
                 <span class="details-menu-mobile">Idade:</span>
-                Em breve
+                ----
               </BaseText>
 
               <BaseText class="pet-info pet-color">
                 <span class="details-menu-mobile">Cor:</span>
-                Em Breve
+                ----
               </BaseText>
             </div>
 
@@ -197,7 +190,7 @@ async function getPetsList() {
 
               <q-btn
                 class="pet-action-btn action-delete-btn"
-                @click="confirmationModal = true"
+                @click="pet.showConfirmationModal = true"
               >
                 <q-tooltip>Apagar Pet</q-tooltip>
 
@@ -218,7 +211,10 @@ async function getPetsList() {
               </q-btn>
             </div>
 
-            <q-dialog v-model="confirmationModal" class="confirmation-modal">
+            <q-dialog
+              v-model="pet.showConfirmationModal"
+              class="confirmation-modal"
+            >
               <q-card>
                 <q-card-section>
                   <BaseText tag="h3">Atenção</BaseText>
@@ -247,41 +243,22 @@ async function getPetsList() {
         </ul>
       </div>
     </section>
+
+    <section class="pagination">
+      <q-pagination
+        v-model="pagination.currentPage"
+        :max="pagination.totalPages"
+        @update:model-value="getPetsList()"
+        size="20px"
+        color="blue"
+      />
+    </section>
   </q-page>
 </template>
 
 <style lang="scss" scoped>
 .your-pets {
   padding-top: 33px;
-
-  & > .pets-search-new {
-    display: flex;
-    justify-content: space-between;
-    flex-direction: column;
-    gap: 20px;
-
-    @media (min-width: $lg) {
-      flex-direction: row;
-    }
-
-    & > a > .new-pet-btn {
-      min-width: 213px;
-
-      svg {
-        margin-right: 7px;
-
-        & > path {
-          stroke: white;
-        }
-      }
-
-      &:hover {
-        svg > path {
-          stroke: $blue;
-        }
-      }
-    }
-  }
 
   & > .pets-list {
     border-radius: 8px;
@@ -315,7 +292,7 @@ async function getPetsList() {
         align-items: center;
         display: flex;
         height: 100%;
-        justify-content: start;
+        justify-content: flex-start;
 
         & > .details-item {
           color: $neutral700;
@@ -454,22 +431,25 @@ async function getPetsList() {
               }
             }
           }
-
-          .confirmation-modal {
-            .text-h3 {
-              color: $neutral900;
-            }
-            .q-pt-none {
-              color: $neutral800;
-            }
-          }
         }
       }
     }
   }
+}
 
-  .btn {
-    margin: 0;
+.confirmation-modal {
+  .text-h3 {
+    color: $blue;
+    font-weight: 600;
   }
+  .q-pt-none {
+    color: $neutral800;
+  }
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  padding-top: 20px;
 }
 </style>
