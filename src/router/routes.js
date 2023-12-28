@@ -50,6 +50,7 @@ const routes = [
         component: () => import("pages/YourPetsPage/YourPetsPage.vue"),
         meta: {
           requiresAuth: true,
+          name: "Seus Pets",
         },
       },
       {
@@ -57,6 +58,7 @@ const routes = [
         component: () => import("pages/PetPage/PetPage.vue"),
         meta: {
           requiresAuth: true,
+          name: "Detalhes",
         },
       },
       {
@@ -64,6 +66,15 @@ const routes = [
         component: () => import("pages/NewPetPage/NewPetPage.vue"),
         meta: {
           requiresAuth: true,
+          name: "Novo Pet",
+        },
+      },
+      {
+        path: "pet/:id/edit",
+        component: () => import("pages/PetPage/PetPage.vue"),
+        meta: {
+          requiresAuth: true,
+          name: "Editar",
         },
       },
     ],

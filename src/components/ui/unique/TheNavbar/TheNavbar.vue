@@ -1,5 +1,9 @@
 <script setup>
 import { BaseText } from "src/components/ui/base";
+
+const props = defineProps({
+  pageTitle: String,
+});
 </script>
 
 <template>
@@ -48,13 +52,14 @@ import { BaseText } from "src/components/ui/base";
   </nav>
   <div class="nav-info">
     <div class="nav-info-container">
-      <BaseText tag="h2">Seus Pets</BaseText>
+      <BaseText tag="h2">{{ pageTitle }}</BaseText>
     </div>
   </div>
 </template>
 
 <style lang="scss">
 .nav {
+  background-color: white;
   border-bottom: 1px solid $neutral200;
   height: 86px;
   width: 100%;
@@ -142,6 +147,7 @@ import { BaseText } from "src/components/ui/base";
   }
 }
 .nav-info {
+  background-color: white;
   box-shadow: 0 1px 2px 0 #00000014;
   height: 74px;
 
