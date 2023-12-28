@@ -4,6 +4,7 @@ import { useRouter } from "vue-router";
 import { Notify } from "quasar";
 import { apiErrorHandler } from "src/helpers";
 import { api } from "boot/axios";
+import { listAll, deleteItem } from "src/services/pets";
 import debounce from "lodash.debounce";
 import { BaseText } from "src/components/ui/base";
 import { NoPets, SearchRow } from "./sections";
@@ -20,7 +21,7 @@ const pagination = reactive({
 const searchText = ref("");
 const filteredPets = debounce(() => {
   pagination.currentPage = 1;
-  getPetsList();
+  getPetsData();
 }, 350);
 
 watch(searchText, () => {
@@ -29,15 +30,13 @@ watch(searchText, () => {
 });
 
 onBeforeMount(
-  async () => await getPetsList().finally(() => (loading.value = false))
+  async () => await getPetsData().finally(() => (loading.value = false))
 );
 
-async function deletePet(id) {
+function deletePet(id) {
   loading.value = true;
 
-  return await api
-    .delete(`/pets/${id}`)
-    .then((response) => response.data)
+  deleteItem(id, ROUTER)
     .then(({ message }) => {
       if (message === "Sucesso!") {
         Notify.create({
@@ -49,11 +48,6 @@ async function deletePet(id) {
     })
     .catch((error) => {
       const { message, data } = apiErrorHandler(error);
-
-      if (message === "MISSING_AUTH") {
-        ROUTER.push("/entrar");
-        return;
-      }
 
       if (data) {
         Notify.create({ type: "negative", message });
@@ -69,17 +63,17 @@ async function deletePet(id) {
     });
 }
 
-async function getPetsList() {
+async function getPetsData() {
   loading.value = true;
 
-  const URL = "/pets";
-
   try {
-    const response = await api.get(URL, {
-      params: { search: searchText.value, page: pagination.currentPage },
-    });
-    const data = response.data.data;
-    console.log("🚀 ~ file: YourPetsPage.vue:80 ~ getPetsList ~ data:", data);
+    const { data } = await listAll(
+      {
+        search: searchText.value,
+        page: pagination.currentPage,
+      },
+      ROUTER
+    );
 
     pagination.currentPage = data.current_page;
     pagination.totalPages = data.last_page;
@@ -87,11 +81,6 @@ async function getPetsList() {
     pets.value = data.data;
   } catch (error) {
     const { message, data } = apiErrorHandler(error);
-
-    if (message === "MISSING_AUTH") {
-      ROUTER.push("/entrar");
-      return;
-    }
 
     if (data) {
       Notify.create({ type: "negative", message });
@@ -248,7 +237,7 @@ async function getPetsList() {
       <q-pagination
         v-model="pagination.currentPage"
         :max="pagination.totalPages"
-        @update:model-value="getPetsList()"
+        @update:model-value="getPetsData()"
         size="20px"
         color="blue"
       />

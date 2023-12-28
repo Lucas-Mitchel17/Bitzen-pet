@@ -1,4 +1,3 @@
-import { useRouter } from "vue-router";
 import { Notify } from "quasar";
 
 export default function (error) {

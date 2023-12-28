@@ -1,15 +1,19 @@
 <script setup>
 import { reactive, ref } from "vue";
-import { useRouter } from "vue-router";
-import { createItem } from "src/services/pets";
+import { useRoute, useRouter } from "vue-router";
+import { api } from "boot/axios";
 import { Notify } from "quasar";
 import { apiErrorHandler, formHelper } from "src/helpers";
 
 const { getPayload } = formHelper();
 
 const ROUTER = useRouter();
+const ROUTE = useRoute();
 const disabled = ref(false);
 const loading = ref(false);
+
+const petData = ROUTE.params;
+console.log("🚀 ~ file: EditPetPage.vue:16 ~ petData:", petData);
 
 const fields = reactive([
   {
@@ -40,7 +44,7 @@ const fields = reactive([
     errorMessage: "",
   },
   {
-    name: "observation",
+    name: "description",
     type: "textarea",
     size: "is-half",
     label: "Sobre o pet",
@@ -68,34 +72,80 @@ async function onSubmit() {
 }
 
 async function createPet(payload) {
-  try {
-    await createItem(payload, {
+  return await api
+    .post("/pets", payload, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
-    });
-
-    Notify.create({
-      type: "positive",
-      message: "Pet cadastrado com sucesso!",
-    });
-
-    ROUTER.push("/seus-pets");
-  } catch (error) {
-    const { message, data } = apiErrorHandler(error);
-
-    if (data) {
-      Notify.create({ type: "negative", message });
-
-      fields.forEach((field) => {
-        const hasKey = data.hasOwnProperty(field.name);
-
-        if (hasKey) {
-          field.errorMessage = data[field.name][0];
-        }
+    })
+    .then((response) => response.data.data)
+    .then((response) => {
+      Notify.create({
+        type: "positive",
+        message: "Pet cadastrado com sucesso!",
       });
-    }
-  }
+
+      ROUTER.push("/seus-pets");
+    })
+    .catch((error) => {
+      const { message, data } = apiErrorHandler(error);
+
+      if (message === "MISSING_AUTH") {
+        ROUTER.push("/entrar");
+        return;
+      }
+
+      if (data) {
+        Notify.create({ type: "negative", message });
+
+        fields.forEach((field) => {
+          const hasKey = data.hasOwnProperty(field.name);
+
+          if (hasKey) {
+            field.errorMessage = data[field.name][0];
+          }
+        });
+      }
+    });
+}
+
+async function updatePet(payload) {
+  return await api
+    .put("/pets", payload, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    })
+    .then((response) => response.data.data)
+    .then((response) => {
+      console.log(data);
+      Notify.create({
+        type: "positive",
+        message: "Pet atualizado com sucesso!",
+      });
+
+      ROUTER.push("/seus-pets");
+    })
+    .catch((error) => {
+      const { message, data } = apiErrorHandler(error);
+
+      if (message === "MISSING_AUTH") {
+        ROUTER.push("/entrar");
+        return;
+      }
+
+      if (data) {
+        Notify.create({ type: "negative", message });
+
+        fields.forEach((field) => {
+          const hasKey = data.hasOwnProperty(field.name);
+
+          if (hasKey) {
+            field.errorMessage = data[field.name][0];
+          }
+        });
+      }
+    });
 }
 </script>
 
