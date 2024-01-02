@@ -3,7 +3,6 @@ import { onBeforeMount, ref, watch, reactive } from "vue";
 import { useRouter } from "vue-router";
 import { Notify } from "quasar";
 import { apiErrorHandler } from "src/helpers";
-import { api } from "boot/axios";
 import { listAll, deleteItem } from "src/services/pets";
 import debounce from "lodash.debounce";
 import { BaseText } from "src/components/ui/base";
@@ -235,6 +234,7 @@ async function getPetsData() {
 
     <section class="pagination">
       <q-pagination
+        v-if="pets.length"
         v-model="pagination.currentPage"
         :max="pagination.totalPages"
         @update:model-value="getPetsData()"
@@ -253,6 +253,7 @@ async function getPetsData() {
     border-radius: 8px;
     box-shadow: 2px 2px 16px 0 #0000000a;
     margin-top: 41px;
+    background-color: white;
 
     & > .list-title {
       align-items: center;
@@ -297,24 +298,27 @@ async function getPetsData() {
       max-width: 600px;
       width: 100%;
       margin: 50px auto;
-      border: 1px solid $blue;
-      border-radius: 8px;
 
       @media (min-width: $lg) {
         border: none;
-        border-radius: none;
+        border-radius: 0;
+        margin: 0;
         max-width: 100%;
       }
       & > .pet-row {
         & > .pet-card {
           align-items: center;
+          border: 1px solid $blue;
+          border-radius: 8px;
           display: flex;
           height: 300px;
           justify-content: space-between;
           padding: 30px;
           position: relative;
+          margin-bottom: 25px;
 
           @media (min-width: $lg) {
+            border: 0;
             height: 116px;
             margin-bottom: 0;
             padding: 0 30px;
@@ -339,6 +343,7 @@ async function getPetsData() {
 
               @media (min-width: $lg) {
                 max-width: 279px;
+                display: flex;
               }
 
               & > .pet-image {

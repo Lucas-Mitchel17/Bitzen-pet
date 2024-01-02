@@ -4,12 +4,15 @@ import { useRouter } from "vue-router";
 import { createItem } from "src/services/pets";
 import { Notify } from "quasar";
 import { apiErrorHandler, formHelper } from "src/helpers";
+import { PetForm } from "src/components/ui/nested";
 
 const { getPayload } = formHelper();
 
 const ROUTER = useRouter();
 const disabled = ref(false);
 const loading = ref(false);
+const petImage = ref("");
+const petFile = ref("");
 
 const fields = reactive([
   {
@@ -67,6 +70,22 @@ async function onSubmit() {
   await createPet(payload).finally(() => (loading.value = false));
 }
 
+function selectFile() {
+  const input = document.querySelector(".is-pet-picture");
+  input.addEventListener("change", handleFileChange);
+  input.click();
+}
+
+function handleFileChange(event) {
+  const file = event.target.files[0];
+  if (file) {
+    const imageURL = URL.createObjectURL(file);
+
+    petFile.value = [file];
+    petImage.value = imageURL;
+  }
+}
+
 async function createPet(payload) {
   try {
     await createItem(payload, {
@@ -101,29 +120,13 @@ async function createPet(payload) {
 
 <template>
   <q-page padding class="new-pet">
-    <div class="pet-form">
-      <q-input
-        v-model="field.model"
-        v-for="field in fields"
-        lazy-rules
-        outlined
-        stack-label
-        :rules="[field.errorMessage]"
-        :class="field.size"
-        :label="field.label"
-        :key="field.label"
-        :placeholder="field.placeholder"
-        :type="field.type"
-        :loading="loading"
-        :disable="disabled"
-        :error="!!field.errorMessage"
-        :mask="field.mask"
-      >
-        <template #error>
-          <div>{{ field.errorMessage }}</div>
-        </template>
-      </q-input>
-    </div>
+    <PetForm
+      :disabled="disabled"
+      :fields="fields"
+      :loading="loading"
+      :petImage="petImage"
+      @onSelectFile="selectFile()"
+    />
 
     <q-btn
       class="btn is-blue is-full new-pet-btn"
