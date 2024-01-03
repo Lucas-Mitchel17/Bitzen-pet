@@ -8,7 +8,6 @@ const props = defineProps({
 });
 
 const USER_STORE = useUserStore();
-console.log("🚀 ~ file: TheNavbar.vue:11 ~ USER_STORE:", USER_STORE.getImage);
 
 const abbreviatedName = computed(() => {
   const names = USER_STORE.getName.split(" ");
@@ -21,8 +20,6 @@ const abbreviatedName = computed(() => {
     return "";
   }
 });
-
-const teste = () => console.log(USER_STORE.getName);
 </script>
 
 <template>
@@ -30,7 +27,6 @@ const teste = () => console.log(USER_STORE.getName);
     <div class="nav-container">
       <div class="nav-logo">
         <img
-          @click="teste"
           src="../../../../assets/Logo.png"
           alt="Logo da Bitzen Pet"
           class="auth-section-image"
