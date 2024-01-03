@@ -1,9 +1,27 @@
 <script setup>
+import { ref, computed } from "vue";
 import { BaseText } from "src/components/ui/base";
+import { useUserStore } from "src/stores";
 
 const props = defineProps({
   pageTitle: String,
 });
+
+const USER_STORE = useUserStore();
+
+const abbreviatedName = computed(() => {
+  const names = USER_STORE.getName.split(" ");
+
+  if (names.length >= 2) {
+    return `${names[0].charAt(0)}${names[1].charAt(0)}`.toUpperCase();
+  } else if (names.length === 1) {
+    return `${names[0].charAt(0)}`.toUpperCase();
+  } else {
+    return "";
+  }
+});
+
+const teste = () => console.log(USER_STORE.getName);
 </script>
 
 <template>
@@ -11,6 +29,7 @@ const props = defineProps({
     <div class="nav-container">
       <div class="nav-logo">
         <img
+          @click="teste"
           src="../../../../assets/Logo.png"
           alt="Logo da Bitzen Pet"
           class="auth-section-image"
@@ -26,12 +45,14 @@ const props = defineProps({
 
         <div class="nav-link-profile">
           <button class="btn profile-button">
-            <q-avatar>LM</q-avatar>
+            <q-avatar>{{ abbreviatedName }}</q-avatar>
 
             <q-menu>
               <q-list>
                 <q-item clickable v-close-popup>
-                  <q-item-section>Em Breve...</q-item-section>
+                  <router-link class="profile-link" to="/meu-perfil">
+                    <q-item-section>Perfil</q-item-section>
+                  </router-link>
                 </q-item>
               </q-list>
             </q-menu>
@@ -159,5 +180,10 @@ const props = defineProps({
     max-width: 1440px;
     padding: 0 20px;
   }
+}
+
+.profile-link {
+  display: flex;
+  flex-wrap: nowrap;
 }
 </style>

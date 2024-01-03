@@ -167,11 +167,6 @@ async function updatePet(payload) {
   } catch (error) {
     const { message, data } = apiErrorHandler(error);
 
-    if (message === "MISSING_AUTH") {
-      ROUTER.push("/entrar");
-      return;
-    }
-
     if (data) {
       Notify.create({ type: "negative", message });
 

@@ -77,7 +77,7 @@ async function register(payload) {
       <template #description>
         <BaseText class="description">
           Já possui uma conta?
-          <RouterLink to="/login">Entrar na plataforma</RouterLink>
+          <RouterLink to="/entrar">Entrar na plataforma</RouterLink>
         </BaseText>
       </template>
 
