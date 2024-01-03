@@ -8,6 +8,7 @@ const props = defineProps({
 });
 
 const USER_STORE = useUserStore();
+console.log("🚀 ~ file: TheNavbar.vue:11 ~ USER_STORE:", USER_STORE.getImage);
 
 const abbreviatedName = computed(() => {
   const names = USER_STORE.getName.split(" ");
@@ -45,7 +46,12 @@ const teste = () => console.log(USER_STORE.getName);
 
         <div class="nav-link-profile">
           <button class="btn profile-button">
-            <q-avatar>{{ abbreviatedName }}</q-avatar>
+            <img
+              class="profile-image"
+              v-if="USER_STORE.getImage"
+              :src="USER_STORE.getImage"
+            />
+            <q-avatar v-else>{{ abbreviatedName }}</q-avatar>
 
             <q-menu>
               <q-list>
@@ -162,6 +168,13 @@ const teste = () => console.log(USER_STORE.getName);
           svg {
             fill: $neutral500;
           }
+        }
+      }
+
+      & > .nav-link-profile {
+        .profile-image {
+          border-radius: 50%;
+          width: 48px;
         }
       }
     }

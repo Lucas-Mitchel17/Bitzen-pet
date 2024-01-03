@@ -7,6 +7,7 @@ export const useUserStore = defineStore("user", {
     _user: {
       id: null,
       name: "",
+      profile_photo_url: "",
     },
     _token: "",
   }),
@@ -14,6 +15,7 @@ export const useUserStore = defineStore("user", {
   getters: {
     getUser: (state) => state?._user,
     getName: (state) => state._user?.name ?? "",
+    getImage: (state) => state._user?.profile_photo_url ?? "",
   },
 
   actions: {
