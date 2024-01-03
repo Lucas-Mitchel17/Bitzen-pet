@@ -77,6 +77,14 @@ const routes = [
           name: "Editar",
         },
       },
+      {
+        path: "meu-perfil",
+        component: () => import("pages/ProfilePage/ProfilePage.vue"),
+        meta: {
+          requiresAuth: true,
+          name: "Meu Perfil",
+        },
+      },
     ],
   },
 
