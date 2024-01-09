@@ -14,7 +14,7 @@
         color="white"
         text-color="blue"
         unelevated
-        to="/seus-pets"
+        to="/entrar"
         label="Go Home"
         no-caps
       />
