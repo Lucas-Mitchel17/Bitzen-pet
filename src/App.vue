@@ -13,7 +13,11 @@ onMounted(() => {
   // const token = localStorage.getItem("AUTH_TOKEN");
   // setToken(token);
   // validateAuth(token);
+
+  //TODO -> Checkar um jeito de dar refresh no token somente quando está logado
+  // if (ROUTE.meta.requiresAuth && !token) {
   USER_STORE.refreshTokenUser();
+  // }
 });
 
 // function setToken(token) {
