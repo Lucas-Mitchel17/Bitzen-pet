@@ -26,21 +26,22 @@ const routes = [
       },
       {
         path: "esqueceu-sua-senha",
-        component: () => import("pages/ForgotPasswordPage.vue"),
+        component: () =>
+          import("pages/ForgotPasswordPage/ForgotPasswordPage.vue"),
         meta: {
           requiresAuth: false,
         },
       },
       {
         path: "codigo-de-verificacao",
-        component: () => import("pages/EmailCodePage.vue"),
+        component: () => import("pages/EmailCodePage/EmailCodePage.vue"),
         meta: {
           requiresAuth: false,
         },
       },
       {
         path: "nova-senha",
-        component: () => import("pages/NewPasswordPage.vue"),
+        component: () => import("pages/NewPasswordPage/NewPasswordPage.vue"),
         meta: {
           requiresAuth: false,
         },

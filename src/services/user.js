@@ -71,3 +71,36 @@ export const refreshToken = (storedToken) => {
     }
   });
 };
+
+export const sendPasswordCode = (payload) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const { data } = await api.post("/forgot-password", payload);
+      resolve(data);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
+export const validateToken = (payload) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const data = await api.post("/reset-password/token/validate", payload);
+      resolve(data);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
+export const resetPassword = (payload) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const data = await api.post("/reset-password", payload);
+      resolve(data);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
