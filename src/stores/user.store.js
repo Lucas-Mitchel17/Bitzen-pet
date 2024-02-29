@@ -33,9 +33,11 @@ export const useUserStore = defineStore("user", {
     async refreshTokenUser() {
       const storedUser = localStorage.getItem("USER");
       const storedToken = localStorage.getItem("AUTH_TOKEN");
-      const { user, token } = await refreshToken(storedToken);
 
       if (!storedUser || !storedToken) return;
+
+      const { user, token } = await refreshToken(storedToken);
+
       if (!user || !token) return;
 
       this.setUser(user, token);

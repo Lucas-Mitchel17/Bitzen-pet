@@ -47,8 +47,8 @@ async function onSubmit() {
 
   await resetNewPassword(payload);
 
-  // localStorage.removeItem("EMAIL_TOKEN_VALIDATION");
-  // localStorage.removeItem("USER_PASSWORD_TOKEN");
+  localStorage.removeItem("EMAIL_TOKEN_VALIDATION");
+  localStorage.removeItem("USER_PASSWORD_TOKEN");
 }
 
 async function resetNewPassword(payload) {
@@ -65,9 +65,9 @@ async function resetNewPassword(payload) {
   } catch (error) {
     const { message, data } = apiErrorHandler(error);
 
-    if (data) {
-      Notify.create({ type: "negative", message });
+    Notify.create({ type: "negative", message });
 
+    if (data) {
       fields.forEach((field) => {
         const hasKey = data.hasOwnProperty(field.name);
 

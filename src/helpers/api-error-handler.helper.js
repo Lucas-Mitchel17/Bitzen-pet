@@ -20,10 +20,10 @@ export default function (error) {
       const { response } = error;
       let { message, data } = response.data;
 
-      if (message === "Você não está autenticado.") {
-        Notify.create({ type: "negative", message });
-        message = "MISSING_AUTH";
-      }
+      // if (message === "Você não está autenticado.") {
+      //   Notify.create({ type: "negative", message });
+      //   message = "MISSING_AUTH";
+      // }
 
       return {
         data,

@@ -5,6 +5,7 @@ body {
 }
 
 a {
+  cursor: pointer;
   text-decoration: none;
   color: inherit;
 }
@@ -45,7 +46,7 @@ input[type="number"] {
   }
 
   &:hover::before {
-    border-color: $blue !important;
+    border-color: $blue;
   }
 
   .q-field__marginal {

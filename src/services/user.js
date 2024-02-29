@@ -1,4 +1,6 @@
 import { api } from "src/boot/axios";
+import { Notify } from "quasar";
+import router from "src/router";
 
 const baseUrl = "/user";
 
@@ -41,13 +43,16 @@ export const update = (payload, router) => {
   });
 };
 
-export const logout = () => {
+export const logout = (router) => {
   return new Promise(async (resolve, reject) => {
     try {
       const data = await api.post("/logout");
+      localStorage.removeItem("AUTH_TOKEN");
+      router.push("/entrar");
+      Notify.create({ type: "positive", message: "Logout feito com sucesso" });
+
       resolve(data);
     } catch (error) {
-      authCheck(error.response.status, router);
       reject(error);
     }
   });

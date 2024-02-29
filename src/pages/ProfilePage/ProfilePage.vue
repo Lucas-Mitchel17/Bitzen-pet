@@ -88,9 +88,9 @@ async function updateUserData(payload) {
   } catch (error) {
     const { message, data } = apiErrorHandler(error);
 
-    if (data) {
-      Notify.create({ type: "negative", message });
+    Notify.create({ type: "negative", message });
 
+    if (data) {
       fields.forEach((field) => {
         const hasKey = data.hasOwnProperty(field.name);
 
@@ -105,9 +105,7 @@ async function updateUserData(payload) {
 }
 
 const logoutUser = async () => {
-  await logout();
-  localStorage.removeItem("AUTH_TOKEN");
-  Notify.create({ type: "positive", message: "Logout feito com sucesso" });
+  await logout(ROUTER);
 };
 </script>
 
@@ -156,19 +154,19 @@ const logoutUser = async () => {
       <BaseText>Senha</BaseText>
 
       <div class="change-password">
-        <router-link to="#">
+        <a>
           <img src="../../assets/editar.png" />
           <BaseText>Alterar</BaseText>
-        </router-link>
+        </a>
       </div>
     </div>
 
     <div class="logout">
-      <router-link @click="logoutUser" to="/entrar" class="logout-section">
+      <a @click.prevent="logoutUser" class="logout-section">
         <img src="../../assets/logout.png" />
 
         <BaseText>Sair da minha conta</BaseText>
-      </router-link>
+      </a>
     </div>
   </section>
 </template>

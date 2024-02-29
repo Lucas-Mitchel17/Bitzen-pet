@@ -48,9 +48,9 @@ async function sendCodeEmail(payload) {
   } catch (error) {
     const { message, data } = apiErrorHandler(error);
 
-    if (data) {
-      Notify.create({ type: "negative", message });
+    Notify.create({ type: "negative", message });
 
+    if (data) {
       fields.forEach((field) => {
         const hasKey = data.hasOwnProperty(field.name);
 
